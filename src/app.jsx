@@ -12,15 +12,16 @@ function App() {
     }
 
     const handleToggleBookMark = (id) => {
-        const index = users.findIndex(v => v._id === id)
-        const array = [...users]
-        array[index].bookmark = !array[index].bookmark
-        return setUsers(array)
+       return setUsers(users.map((user) => {
+            if(user._id  === id) {
+                user.bookmark = !user.bookmark
+            }
+            return user
+       }))
     }
 
     return (
         <>
-            {console.log(users)}
             <SerchStatus usersCount = {users.length}/>
             <Users users={users} handleDelete={handleDelete} handleBookmark={handleToggleBookMark}/>
         </>
