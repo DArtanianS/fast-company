@@ -1,6 +1,4 @@
 import React from 'react'
-const Qualitite = () =>  {
-
-}
+const Qualitite = () => {}
 
 export default Qualitite
