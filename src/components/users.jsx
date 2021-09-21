@@ -69,7 +69,7 @@ const Users = ({ users, handleDelete, handleBookmark }) => {
                 }
             <div className="d-flex flex-column">
                 <SerchStatus usersCount={count} />
-                {users.length > 0 ? (
+                {count > 0 ? (
                     <table key="Table12" className="table">
                         <MyTableThead />
                         <MyTableBody
