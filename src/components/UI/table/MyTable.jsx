@@ -1,20 +1,26 @@
 import React from 'react'
 import MyTableThead from './MyTableThead'
-import Users from '../../users'
 import PropTypes from 'prop-types'
+import MyTableBody from "./MyTableBody";
 
-const MyTable = ({ users, handleDelete }) => {
+
+const MyTable = ({data, columns, onSort, selectedSort, children}) => {
     return (
-        <table key="Table12" className="table">
-            <MyTableThead />
-            <Users users={users} handleDelete={handleDelete} />
+        <table>
+            {children || <>
+            <MyTableThead {...{onSort, selectedSort, columns}}/>
+            <MyTableBody {...{columns, data}}/>
+            </>}
         </table>
     )
 }
 
 MyTable.propTypes = {
-    users: PropTypes.array.isRequired,
-    handleDelete: PropTypes.func.isRequired
+    data: PropTypes.array,
+    columns: PropTypes.object,
+    onSort: PropTypes.func,
+    selectedSort: PropTypes.object,
+    children: PropTypes.array
 }
 
 export default MyTable

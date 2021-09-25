@@ -1,7 +1,7 @@
 import React from 'react'
 import MySpan from './UI/span/MySpan'
 import PropTypes from 'prop-types'
-import classes from './UI/bookmark/MyBookmark.modules.css'
+
 
 const User = ({ item, handleDelete, handleBookmark }) => {
     const { _id, name, qualities, profession, completedMeetings, rate } = item

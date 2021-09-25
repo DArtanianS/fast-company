@@ -1,26 +1,36 @@
 import React from 'react'
-import User from '../../user'
 import PropTypes from 'prop-types'
+import _ from 'lodash'
 
-const MyTableBody = ({ users, handleDelete, handleBookmark }) => {
+const MyTableBody = ({data, columns}) => {
+    const renderContent = (column, item) => {
+        if(columns[column].component) {
+            const components = columns[column].component
+            if(typeof components === 'function') {
+                return components(item)
+            }
+            return components
+        }
+        return _.get(item, columns[column].path)
+    }
     return (
-        <>
-            {users.map((item) => (
-                <User
-                    key={item._id}
-                    item={item}
-                    handleDelete={handleDelete}
-                    handleBookmark={handleBookmark}
-                />
-            ))}
-        </>
+        <tbody>
+        {data.map((item) => <tr key={item._id}>
+                {
+                    Object.keys(columns).map(column => <td key={column}>
+                            {renderContent(column, item)}
+                    </td>
+                    )
+                }
+            </tr>
+            )}
+        </tbody>
     )
 }
 
 MyTableBody.propTypes = {
-    users: PropTypes.array.isRequired,
-    handleDelete: PropTypes.func.isRequired,
-    handleBookmark: PropTypes.func.isRequired
+    data: PropTypes.array.isRequired,
+    columns: PropTypes.object.isRequired,
 }
 
 export default MyTableBody

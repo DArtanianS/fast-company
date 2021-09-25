@@ -1,18 +1,23 @@
 import React, {useState, useEffect} from 'react'
-import MyTableBody from './UI/table/MyTableBody'
-import MyTableThead from './UI/table/MyTableThead'
-import PropTypes from 'prop-types'
 import MyPagination from "./UI/pagination/MyPagination";
 import {paginate} from "../utils/paginate";
 import SerchStatus from "./serchStatus";
 import GroupList from "./groupList";
 import api from '../API'
+import _ from 'lodash'
+import UsersTable from "./usersTable";
 
-const Users = ({ users, handleDelete, handleBookmark }) => {
+
+const Users = () => {
+    const [users, setUsers] = useState()
+
     const [currentPage, setCurrentPage] = useState(1)
     const [professions, setProfessions] = useState()
     const [selectedProf, setSelectedProf] = useState()
+    const [sortBy, setSortBy] = useState({iter: 'name', order: 'asc'})
+    let count = 0
     const pageSize = 4
+
     useEffect(() => {
         api.professions.fetchAll().then((data) =>
             setProfessions(
@@ -20,6 +25,11 @@ const Users = ({ users, handleDelete, handleBookmark }) => {
             )
         )
     },[])
+
+    useEffect(() => {
+        api.users.default.fetchAll().then(data => setUsers(data))
+    },[])
+
 
     useEffect(() => {
         if((currentPage - 1) === (count / pageSize)) {
@@ -31,6 +41,27 @@ const Users = ({ users, handleDelete, handleBookmark }) => {
         setCurrentPage(1)
     },[selectedProf])
 
+
+    const handleDelete = (userId) => {
+        return setUsers([...users].filter((user) => user._id !== userId))
+    }
+
+    const handleBookmark = (id) => {
+        return setUsers(
+            users.map((user) => {
+                if (user._id === id) {
+                    user.bookmark = !user.bookmark
+                }
+                return user
+            })
+        )
+    }
+
+
+    const handelSort = (item) => {
+        setSortBy({iter: item.iter, order: item.order})
+    }
+
     const handleProfessionsSelect = (item) => {
         setSelectedProf(item)
     }
@@ -39,18 +70,22 @@ const Users = ({ users, handleDelete, handleBookmark }) => {
         setCurrentPage(pageIndex)
     }
 
-    const filteredUsers = selectedProf
-        ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
-        : users
-    const count = filteredUsers.length
-    const userCropt = paginate(filteredUsers, currentPage, pageSize)
 
-    const clearFilter = () => {
-        setSelectedProf()
-    }
+    if(users) {
 
-    return (
-        <div className="d-flex">
+        const filteredUsers = selectedProf
+            ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
+            : users
+        count = filteredUsers.length
+        const sortedUsers = _.orderBy(filteredUsers, [sortBy.iter], [sortBy.order]) //TODO: почему path а не iter
+        const userCropt = paginate(sortedUsers, currentPage, pageSize)
+
+        const clearFilter = () => {
+            setSelectedProf()
+        }
+
+        return (
+            <div className="d-flex">
 
                 {professions &&
                 <div className="d-flex flex-column flex-shrink-0 p-3">
@@ -67,37 +102,32 @@ const Users = ({ users, handleDelete, handleBookmark }) => {
                     </button>
                 </div>
                 }
-            <div className="d-flex flex-column">
-                <SerchStatus usersCount={count} />
-                {count > 0 ? (
-                    <table key="Table12" className="table">
-                        <MyTableThead />
-                        <MyTableBody
+                <div className="d-flex flex-column">
+                    <SerchStatus usersCount={count}/>
+                    {count > 0 ? (
+                        <UsersTable
+                            handleBookmark={handleBookmark}
+                            onSort={handelSort}
                             users={userCropt}
                             handleDelete={handleDelete}
-                            handleBookmark={handleBookmark}
+                            selectedSort={sortBy}
                         />
-                    </table>
-                ) : (
-                    ''
-                )}
-                <div className="d-flex justify-content-center">
-                    <MyPagination
-                        itemsCount={count}
-                        pageSize={pageSize}
-                        currentPage={currentPage}
-                        onPageCange={handlePageChange}
-                    />
+                    ) : (
+                        ''
+                    )}
+                    <div className="d-flex justify-content-center">
+                        <MyPagination
+                            itemsCount={count}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageCange={handlePageChange}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
-    )
-}
-
-Users.propTypes = {
-    users: PropTypes.array.isRequired,
-    handleDelete: PropTypes.func.isRequired,
-    handleBookmark: PropTypes.func.isRequired
+        )
+    }
+    return  'loading...'
 }
 
 export default Users
