@@ -1,11 +1,9 @@
 import React, {useState, useEffect} from 'react'
-import MyPagination from "./UI/pagination/MyPagination";
 import {paginate} from "../utils/paginate";
-import SerchStatus from "./serchStatus";
-import GroupList from "./groupList";
 import api from '../API'
 import _ from 'lodash'
-import UsersTable from "./usersTable";
+import Sidebar from "./sidebar";
+import Maincontent from "./maincontent";
 
 
 const Users = () => {
@@ -18,6 +16,9 @@ const Users = () => {
     let count = 0
     const pageSize = 4
 
+    console.log('api.professions', api.professions);
+    console.log('api.users', api.users);
+
     useEffect(() => {
         api.professions.fetchAll().then((data) =>
             setProfessions(
@@ -27,7 +28,7 @@ const Users = () => {
     },[])
 
     useEffect(() => {
-        api.users.default.fetchAll().then(data => setUsers(data))
+        api.users.fetchAll().then(data => setUsers(data))
     },[])
 
 
@@ -85,44 +86,24 @@ const Users = () => {
         }
 
         return (
-            <div className="d-flex">
 
-                {professions &&
-                <div className="d-flex flex-column flex-shrink-0 p-3">
-                    <GroupList
-                        selectedItem={selectedProf}
-                        items={professions}
-                        onItemsSelect={handleProfessionsSelect}
-                    />
-                    <button
-                        className="btn btn-secondary mt-2"
-                        onClick={clearFilter}
-                    >
-                        Очистить
-                    </button>
-                </div>
-                }
-                <div className="d-flex flex-column">
-                    <SerchStatus usersCount={count}/>
-                    {count > 0 ? (
-                        <UsersTable
-                            handleBookmark={handleBookmark}
-                            onSort={handelSort}
-                            users={userCropt}
-                            handleDelete={handleDelete}
-                            selectedSort={sortBy}
-                        />
-                    ) : (
-                        ''
-                    )}
-                    <div className="d-flex justify-content-center">
-                        <MyPagination
-                            itemsCount={count}
-                            pageSize={pageSize}
-                            currentPage={currentPage}
-                            onPageCange={handlePageChange}
-                        />
-                    </div>
+            <div className="d-flex flex-column">
+
+                <div className="d-flex flex-row">
+                    <Sidebar {...{
+                        professions,
+                        selectedProf,
+                        handleProfessionsSelect,
+                        clearFilter}}/>
+                    <Maincontent {...{
+                        count,
+                        handleBookmark,
+                        handelSort,
+                        userCropt,
+                        handleDelete,
+                        sortBy, pageSize,
+                        currentPage,
+                        handlePageChange}}/>
                 </div>
             </div>
         )

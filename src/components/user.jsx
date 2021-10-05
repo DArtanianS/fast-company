@@ -1,67 +1,56 @@
 import React from 'react'
-import MySpan from './UI/span/MySpan'
-import PropTypes from 'prop-types'
+import {useState} from 'react'
+import {useParams} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
+import api from '../API'
+import QualitiesList from "./qualitiesList";
 
 
-const User = ({ item, handleDelete, handleBookmark }) => {
-    const { _id, name, qualities, profession, completedMeetings, rate } = item
-    return (
-        <tbody key={_id + 'headTable22'}>
-            <tr key={_id}>
-                <td key={_id + 'name'}>{name}</td>
-                <td key={_id + 'qualities'}>
-                    {qualities.map((val, index) => (
-                        <MySpan
-                            key={index + val.name}
-                            myKey={index + val.name}
-                            colorTopBage={'p-2 m-2 badge bg-' + val.color}
-                            textTopSpan={val.name}
-                        />
-                    ))}
-                </td>
-                <td key={_id + 'profession'}>{profession.name}</td>
-                <td key={_id + 'completedMeetings'}>{completedMeetings}</td>
-                <td key={_id + 'rate'}>{rate + '/5'}</td>
-                <td key={_id + 'bookmark'}>
-                    <button
-                        key={_id + 'btn-bookmark'}
-                        type="button"
-                        className="btn btn-info"
-                        onClick={() => {
-                            handleBookmark(_id)
-                        }}
-                    >
-                        <i
-                            key={_id + 'i'}
-                            className={`bi bi-bookmark${
-                                item.bookmark ? '-fill' : ''
-                            }`}
-                        >
-                            {' '}
-                        </i>
-                    </button>
-                </td>
-                <td key={_id + 'delete'}>
-                    <button
-                        key={_id + 'bt-button'}
-                        onClick={() => {
-                            handleDelete(_id)
-                        }}
-                        type="button"
-                        className="btn btn-danger"
-                    >
-                        Delete
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    )
-}
+const User = () => {
+    const [user, setUser] = useState()
+    const {userId} = useParams()
+    const history = useHistory()
 
-User.propTypes = {
-    item: PropTypes.object.isRequired,
-    handleDelete: PropTypes.func.isRequired,
-    handleBookmark: PropTypes.func.isRequired
+    const handlrBack = () => {
+        history.push('/users/')
+    }
+
+    api.users.getById(userId).then(data => setUser(data))
+
+    if(user) {
+        return (
+            <>
+                <div className="container col-md-6">
+                <div className="card ">
+                    <h2 className="card-header text-center">{user.name}</h2>
+                    <div className="card-body">
+                        <h5 className="card-title">Профессия: {user.profession.name}</h5>
+                    </div>
+                    <ul className="list-group list-group-flush ">
+                        <li className="list-group-item text-center"><QualitiesList qualities={user.qualities}/></li>
+                        <li className="list-group-item ">
+                            <h4>Выполненно встреч  <span className="badge bg-danger">{user.completedMeetings}</span></h4>
+
+                        </li>
+                        <li className="list-group-item">
+                            <h4>Рейтинг  <span className="badge bg-danger">{user.rate}</span></h4>
+                        </li>
+                    </ul>
+                    <div className="card-body text-center">
+                        <button type="button"
+                                className="btn btn-primary"
+                                onClick={() => {
+                                    handlrBack()
+                                }}>
+                            Все пользователи
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </>
+        )
+    }
+    return  (<h1>Loading</h1>)
 }
 
 export default User
