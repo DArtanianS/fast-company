@@ -1,17 +1,18 @@
 import React from 'react';
-import MySpan from "./UI/span/MySpan";
+import MySpan from "./MySpan";
 import PropTypes from 'prop-types'
 
 const QualitiesList = ({qualities}) => {
     return (
         <>
             {qualities.map((val, index) => (
-                <MySpan
-                    key={index + val.name}
-                    myKey={index + val.name}
-                    colorTopBage={'p-2 m-2 badge bg-' + val.color}
-                    textTopSpan={val.name}
-                />
+            <MySpan
+                key={index + val.name}
+                color={val.color}
+                customCss='p-2 m-2'
+            >
+                {val.name}
+            </MySpan>
             ))}
         </>
     );

@@ -1,17 +1,20 @@
 import React from 'react';
-import QualitiesList from "./qualitiesList";
-import MyBookmark from "./UI/bookmark/MyBookmark";
-import MyButtonDelete from "./UI/button/MyButtonDelete";
-import MyTable from "./UI/table/MyTable";
-import MyTableThead from "./UI/table/MyTableThead";
-import MyTableBody from "./UI/table/MyTableBody";
+import Qualities from "./qualities";
+import MyBookmark from "../common/MyBookmark";
+import MyButtonDelete from "./button/MyButtonDelete";
+import MyTable from "../common/table";
+import {Link} from "react-router-dom";
 
 const UsersTable = ({ users : data, handleDelete, handleBookmark, onSort, selectedSort}) => {
     const columns = {
-        name: {path: 'name', name: 'Имя'},
+        name: {
+            path: 'name',
+            name: 'Имя',
+            component: (item) => (<Link to={`/users/${item._id}`}>{item.name}</Link>)
+        },
         qualities: {
             name: 'Качества',
-            component: (item) => (<QualitiesList qualities={item.qualities}/>)
+            component: (item) => (<Qualities qualities={item.qualities}/>)
         },
         profession: {path: 'profession.name', name: 'Профессия'},
         completedMeetings: {path: 'completedMeetings', name: 'Встретился, раз'},
@@ -25,10 +28,7 @@ const UsersTable = ({ users : data, handleDelete, handleBookmark, onSort, select
 
     }
     return (
-            <MyTable>
-                <MyTableThead {... {selectedSort, onSort, columns}}/>
-                <MyTableBody {...{data, columns}}/>
-            </MyTable>
+            <MyTable {... {selectedSort, columns, data, onSort}}/>
     );
 };
 

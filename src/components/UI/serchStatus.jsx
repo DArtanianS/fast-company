@@ -1,37 +1,30 @@
 import React from 'react'
-import MySpan from './UI/span/MySpan'
-import classes from './UI/span/MySpan.module.css'
+import {MySpan} from './qualities'
 import PropTypes from 'prop-types'
+import cn from 'classnames'
 
-const serchStatus = ({ usersCount }) => {
-    const colorBadges = ['primary', 'danger']
-
+const SerchStatus = ({ usersCount }) => {
     const renderPharse = (number) => {
         return number === 1 || number > 4
             ? 'человек тусанет'
             : 'человека тусанут'
     }
-
-    const colorTopBage = usersCount === 0 ? colorBadges[1] : colorBadges[0]
-
     const textTopSpan =
         usersCount === 0
             ? 'Никто не тусанет с тобой'
             : `${usersCount} ${renderPharse(usersCount)} с тобой сегодня`
 
     return (
-        <>
             <MySpan
-                myKey="informCountPeople"
-                colorTopBage={`${colorTopBage} ${classes.MySpan}`}
-                textTopSpan={textTopSpan}
-            />
-        </>
+                color={cn({'primary': usersCount > 0}, {'danger': usersCount === 0})}
+            >
+                <h1>{textTopSpan}</h1>
+            </MySpan>
     )
 }
 
-serchStatus.propTypes = {
+SerchStatus.propTypes = {
     usersCount: PropTypes.number.isRequired
 }
 
-export default serchStatus
+export default SerchStatus

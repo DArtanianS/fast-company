@@ -1,21 +1,21 @@
 import React from 'react'
-import {useState} from 'react'
-import {useParams} from 'react-router-dom'
+import {useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
-import api from '../API'
-import QualitiesList from "./qualitiesList";
+import api from '../../../API'
+import Qualities, {MySpan} from "../../UI/qualities";
 
 
-const User = () => {
+
+const UserPage = ({ userId }) => {
     const [user, setUser] = useState()
-    const {userId} = useParams()
     const history = useHistory()
 
     const handlrBack = () => {
         history.push('/users/')
     }
-
-    api.users.getById(userId).then(data => setUser(data))
+    useEffect(() => {
+        api.users.getById(userId).then(data => setUser(data))
+    },[])
 
     if(user) {
         return (
@@ -27,13 +27,13 @@ const User = () => {
                         <h5 className="card-title">Профессия: {user.profession.name}</h5>
                     </div>
                     <ul className="list-group list-group-flush ">
-                        <li className="list-group-item text-center"><QualitiesList qualities={user.qualities}/></li>
+                        <li className="list-group-item text-center"><Qualities qualities={user.qualities}/></li>
                         <li className="list-group-item ">
-                            <h4>Выполненно встреч  <span className="badge bg-danger">{user.completedMeetings}</span></h4>
+                            <h4>Выполненно встреч  <MySpan color='danger'>{user.completedMeetings}</MySpan></h4>
 
                         </li>
                         <li className="list-group-item">
-                            <h4>Рейтинг  <span className="badge bg-danger">{user.rate}</span></h4>
+                            <h4>Рейтинг <MySpan color='danger'>{user.rate}</MySpan></h4>
                         </li>
                     </ul>
                     <div className="card-body text-center">
@@ -53,4 +53,4 @@ const User = () => {
     return  (<h1>Loading</h1>)
 }
 
-export default User
+export default UserPage

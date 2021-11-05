@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classes from './MyBookmark.modules.css'
 
 const MyBookmark = ({status, ...rest}) => {
     return (
@@ -9,7 +8,7 @@ const MyBookmark = ({status, ...rest}) => {
             className="btn btn-info"
             {...rest}
         >
-            <i className={`bi bi-bookmark${status ? '-fill' : ''}`}></i>
+            <i className={`bi bi-bookmark${status ? '-fill' : ''}`}> </i>
         </button>
     );
 };

@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classes from '../bookmark/MyBookmark.modules.css'
 
 const MyTableThead = ({selectedSort, onSort, columns}) => {
 
@@ -34,8 +33,7 @@ const MyTableThead = ({selectedSort, onSort, columns}) => {
                         key={column}
                         onClick={
                             columns[column].path
-                                ? () => handleSort(columns[column].path)
-                                : undefined}
+                                && (() => handleSort(columns[column].path))}
                         {...{role: columns[column].path && 'button'}}
                         scope="col"
                     >
