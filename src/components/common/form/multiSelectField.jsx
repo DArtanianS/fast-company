@@ -2,7 +2,8 @@ import React from 'react'
 import Select from 'react-select'
 import PropTypes from 'prop-types'
 
-const MultiSelectField = ({options, onChange, name, label}) => {
+const MultiSelectField = ({value, options, onChange, name, label}) => {
+    console.log('options', options)
     const optionsArray =
         !Array.isArray(options) && typeof(options) === 'object'
             ? Object.keys(options).map((optionName) => ({
@@ -10,6 +11,7 @@ const MultiSelectField = ({options, onChange, name, label}) => {
                 value: options[optionName]._id
             }))
             : options
+    console.log('options', options)
 
     const handleChange = (value) => {
         console.log('target multiselect', value)
@@ -22,6 +24,7 @@ const MultiSelectField = ({options, onChange, name, label}) => {
         <div className='mb-4'>
             <label className='form-label'>{label}</label>
             <Select
+                value={value}
                 isMulti
                 closeMenuOnSelect={false}
                 options={optionsArray}

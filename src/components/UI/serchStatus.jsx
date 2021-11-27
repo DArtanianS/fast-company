@@ -1,5 +1,5 @@
 import React from 'react'
-import {MySpan} from './qualities'
+import MySpan from './qualities'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 

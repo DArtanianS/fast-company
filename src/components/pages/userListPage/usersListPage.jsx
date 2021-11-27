@@ -13,14 +13,9 @@ const UsersListPage = () => {
     const [selectedProf, setSelectedProf] = useState(null)
     const [serchNames, setSerchNames] = useState('')
 
-    //const [sertch, setSertch] = useState({profession: '', name: ''})
-
     const [sortBy, setSortBy] = useState({iter: 'name', order: 'asc'})
     let count = 0
     const pageSize = 4
-
-    // console.log('api.professions', api.professions);
-    // console.log('api.users', api.users);
 
     useEffect(() => {
         api.professions.fetchAll().then((data) =>
@@ -32,7 +27,6 @@ const UsersListPage = () => {
 
     useEffect(() => {
         api.users.fetchAll().then(data => setUsers(data))
-        console.log('data', users)
     },[])
 
 
@@ -44,14 +38,12 @@ const UsersListPage = () => {
 
     useEffect(() => {
         setSelectedProf(prevstate =>{console.log('prevstate', prevstate)
-            console.log('selectedProf', selectedProf)
         return selectedProf})
         setCurrentPage(1)
     },[selectedProf])
 
     useEffect(() => {
         setSerchNames(prevstate => {console.log('prevstate', prevstate)
-            console.log('serchNames', serchNames)
         return serchNames})
         setCurrentPage(1)
     }, [serchNames])
@@ -64,7 +56,6 @@ const UsersListPage = () => {
          }
              return e.target.value
          })
-         console.log('serchNames', serchNames)
     }
 
 
@@ -106,8 +97,6 @@ const UsersListPage = () => {
 
         const filteredUsers = () => {
             if(serchNames !== ''){
-                console.log('serchName in', serchNames)
-                users.map(user => {console.log(user.name)})
                 return users.filter((user) => user.name.toLowerCase().indexOf(serchNames.toLowerCase()) !== -1)
             }
             if(selectedProf !== null) {
@@ -116,7 +105,6 @@ const UsersListPage = () => {
             return users
         }
 
-        console.log('filteredUsers', filteredUsers())
         count = filteredUsers().length
         const sortedUsers = _.orderBy(filteredUsers(), [sortBy.iter], [sortBy.order]) //TODO: почему path а не iter
         const userCropt = paginate(sortedUsers, currentPage, pageSize)

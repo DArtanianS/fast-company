@@ -8,23 +8,25 @@ import PropTypes from 'prop-types'
  * @param value - текущее значение поля
  * @param onChange - функция смены текущего значения
  * @param defaultOption - текст отображающийся в строке выбора по умолчанию
- * @param options - список полей с обязательной структуроу {...{_id: 'id',name: 'Data'}} либо [...{_id: 'id',name: 'Data'}]
+ * @param options - список полей с обязательными полями name, и data
  * @param error - строка с ошибкой
+ * @param name - название поля
  * @returns {JSX.Element}
  * @constructor
  */
-const SelectField = ({label, value, onChange, defaultOption, options, error}) => {
+const SelectField = ({label, value, onChange, defaultOption, options, error, name}) => {
+    console.log('value', value)
     const optionsArray =
         !Array.isArray(options) && typeof(options) === 'object'
             ? Object.keys(options).map((optionName) => ({
                 name: options[optionName].name,
                 value: options[optionName]._id
                 }))
-            : options
+            : options.map(opt => ({ name: opt.name, value: opt._id }))
 
     const handleChange = ({target}) => {
-        console.log('target selectField',target)
-        onChange({name: target.name, value: target.value})
+        const {name, value} = target
+        onChange({name: name, value: value})
     }
 
     return (
@@ -32,21 +34,27 @@ const SelectField = ({label, value, onChange, defaultOption, options, error}) =>
             <label htmlFor='validationCustom04' className='form-label'>{label}</label>
             <select
                 className={cn('form-select', {['is-invalid']: error})}
-                id='validationCustom04'
-                name='profession'
+                id={name}
+                name={name}
                 value={value}
                 onChange={handleChange}
             >
-                <option selected={value === ''} disabled value="">
+                <option
+                    key='defaultOption'
+                    disabled
+                    value=''
+                >
                     {defaultOption}
                 </option>
-                {optionsArray && optionsArray.map(option =>
-                    <option
-                    key={option.value}
-                    value={option.value}
-                >
-                    {option.name}
-                </option>)}
+                {optionsArray && optionsArray.map(option => {
+                    return (<option
+                        key={option.value}
+                        value={option.value}
+                    >
+                        {option.name}
+                    </option>)}
+                )
+                }
             </select>
             {error &&
             <div className='invalid-feedback'>
@@ -57,12 +65,18 @@ const SelectField = ({label, value, onChange, defaultOption, options, error}) =>
     )
 }
 
+SelectField.defaultProps = {
+    type: "text",
+    defaultOption: ""
+}
+
 SelectField.propTypes = {
     label: PropTypes.string,
     value: PropTypes.string,
     defaultOption: PropTypes.string,
     onChange: PropTypes.func,
     options: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    name: PropTypes.string,
     error: PropTypes.string
 }
 
